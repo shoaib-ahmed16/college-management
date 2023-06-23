@@ -11,7 +11,7 @@ public interface TeacherService {
 		
 		public TeacherDTO fetchTeacherByEmail(String email);
 		
-		public TeacherDTO fetchTeacherByNameAndDepartmentAndSubject(Map<String,String> map);
+		public List<TeacherDTO> fetchTeacherByNameAndDepartmentAndSubject(Map<String,String> map);
 		
 		public List<TeacherDTO> fetchAllTeacher();
 		
@@ -19,9 +19,9 @@ public interface TeacherService {
 		
 		public void deleteTeacherById(Long id);
 		
-		public void saveAndUpdateTeacher(Teacher teacher);
+		public String saveAndUpdateTeacher(Teacher teacher);
 		
 		public List<TeacherEmployementRecordDTO> getTeachersEmployeementRecords();
 		
-		public TeacherEmployementRecordDTO getTeacherEmployeementRecordByEmailId();
+		public TeacherEmployementRecordDTO getTeacherEmployeementRecordByEmailId(String email,Long id);
 }

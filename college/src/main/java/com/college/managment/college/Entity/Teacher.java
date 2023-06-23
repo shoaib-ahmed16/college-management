@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Teacher {
 
 	@Id
-	private long id;
+	private Long id;
 	
 	private String name;
 	
@@ -17,7 +17,7 @@ public class Teacher {
 	
 	private String password;
 	
-	private final String role ="TEACHER";
+	private String role ="TEACHER";
 	
 	private String subject;
 	
@@ -78,11 +78,11 @@ public class Teacher {
 		this.reposibility = reposibility;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
