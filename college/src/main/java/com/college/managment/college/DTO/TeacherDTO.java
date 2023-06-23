@@ -25,6 +25,46 @@ public class TeacherDTO {
 	private String reposibility;
 	
 	private List<String> listBatches;
+	
+    private double salary;
+	
+	private String joiningDate;
+	
+	private String lastWorkingDate;
+	
+	private Boolean workingStatus;
+
+	public double getSalary() {
+		return salary;
+	}
+
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+
+	public String getJoiningDate() {
+		return joiningDate;
+	}
+
+	public void setJoiningDate(String joiningDate) {
+		this.joiningDate = joiningDate;
+	}
+
+	public String getLastWorkingDate() {
+		return lastWorkingDate;
+	}
+
+	public void setLastWorkingDate(String lastWorkingDate) {
+		this.lastWorkingDate = lastWorkingDate;
+	}
+
+	public Boolean getWorkingStatus() {
+		return workingStatus;
+	}
+
+	public void setWorkingStatus(Boolean workingStatus) {
+		this.workingStatus = workingStatus;
+	}
 
 	public long getId() {
 		return id;
@@ -115,6 +155,10 @@ public class TeacherDTO {
 		this.spouseOrHusbandName=teacher.getSpouseOrHusbandName();
 		this.subject=teacher.getSubject();
 		this.role=teacher.getRole();
-		this.reposibility=this.getReposibility();
+		this.reposibility=teacher.getReposibility();
+		this.salary=teacher.getSalary();
+		this.joiningDate=teacher.getJoiningDate();
+		this.lastWorkingDate=teacher.getLastWorkingDate();
+		this.workingStatus=teacher.getWorkingStatus();
 	}
 }

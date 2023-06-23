@@ -3,6 +3,9 @@ package com.college.managment.college.Services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,36 +20,108 @@ public class StudentServiceImpl implements StudentService{
 
 	@Autowired 
 	private StudentRepository studentRepo;
+
 	
 	@Override
 	public void saveStudents(List<Student> students) {
 		// TODO Auto-generated method stub
-		
+		try {
+			for(Student s:students) {
+				studentRepo.save(s);
+			}
+		}catch(Exception exc) {
+			exc.getStackTrace();
+		}
 	}
 
 	@Override
 	public StudentDTO fetchStudentByEmail(String email) {
-		// TODO Auto-generated method stub
-		return null;
+		Student stud=null;
+		try {
+			stud = studentRepo.findByEmail(email).orElseThrow(()-> new Exception(""));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new StudentDTO(stud);
 	}
 
 	@Override
-	public StudentDTO fetchStudentByNameAndBatchAndDepartment(Map<String, String> map) {
-		// TODO Auto-generated method stub
+	public List<StudentDTO> fetchStudentByNameAndBatchAndDepartment(Map<String, String> map) {
+		try {
+			String name =null;
+			String batch=null;
+			String department=null;
+			if(map.get("name")!=null) {
+				name =String.valueOf(map.get("name"));
+			}else {
+				throw new Exception("Name detail is must get the record");
+			}
+			if(map.get("batch")!=null) {
+				name =String.valueOf(map.get("batch"));
+			}else {
+				throw new Exception("Batch detail is must get the record");
+			}
+			if(map.get("department")!=null) {
+				name =String.valueOf(map.get("department"));
+			}else {
+				throw new Exception("Department detail is must get the record");
+			}
+
+			List<Student> students =studentRepo.findByNameAndBatchAndDepartment(name, batch, department);
+			List<StudentDTO> resStudents =new ArrayList<>();
+			for(Student s:students) {
+				resStudents.add(new StudentDTO(s));
+			}
+			return resStudents;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
 		return null;
 	}
 
 	@Override
 	public String saveAndUpdateStudent(Student student) {
 		// TODO Auto-generated method stub
-		studentRepo.save(student);
-		return "Save"; 
+		String message ="Student Record is not saved unknown error occured!";
+		if(student.getId()!=null) {
+		 Optional<Student> stud =studentRepo.findById(student.getId());
+		 if(stud.isPresent())
+		 {
+			 Student studs=stud.get();
+			 studs.setBatch(student.getBatch());
+			 studs.setDateOfBirth(student.getDateOfBirth());
+			 studs.setDepartment(student.getDepartment());
+			 studs.setFatherName(student.getFatherName());
+			 studs.setMotherName(student.getMotherName());
+			 studs.setRole(student.getRole());
+			 studs.setName(student.getName());
+			 studs.setSubjects(student.getSubjects());
+			 studentRepo.save(student);
+			 return "Student Record is updated successfully!";
+		 }else
+		 {
+			 studentRepo.save(student);
+			 return "Student Record is saved successfully!";
+		 }
+		}
+		return message; 
 	}
 
 	@Override
-	public void deleteStudentById(Long id) {
-		// TODO Auto-generated method stub
-		
+	public String deleteStudentById(Long id) {
+		String message="While deleting Student Record unknown Error occured!";
+		try {
+			Student stud =studentRepo.findById(id).orElseThrow(()->new Exception(""));
+			studentRepo.delete(stud);
+			return "Student Record deleted Successfully!";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return message;
 	}
 
 	@Override
@@ -57,6 +132,19 @@ public class StudentServiceImpl implements StudentService{
 			list.add(new StudentDTO(s));
 		}
 		return list;
+	}
+
+	@Override
+	public StudentDTO fetchStudentByID(Long id) {
+		// TODO Auto-generated method stub
+		Student student =null;
+		try {
+			student =studentRepo.findById(id).orElseThrow(()->new Exception(""));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new StudentDTO(student);
 	}
 
 }

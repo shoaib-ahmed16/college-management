@@ -3,9 +3,10 @@ package com.college.managment.college.Entity;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document
 public class Teacher {
-
 
 	@Id
 	private long id;
@@ -28,6 +29,45 @@ public class Teacher {
 	
 	private String reposibility;
 	
+	private double salary;
+	
+	private String joiningDate;
+	
+	private String lastWorkingDate;
+	
+	private Boolean workingStatus;
+	
+	public double getSalary() {
+		return salary;
+	}
+
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+
+	public String getJoiningDate() {
+		return joiningDate;
+	}
+
+	public void setJoiningDate(String joiningDate) {
+		this.joiningDate = joiningDate;
+	}
+
+	public String getLastWorkingDate() {
+		return lastWorkingDate;
+	}
+
+	public void setLastWorkingDate(String lastWorkingDate) {
+		this.lastWorkingDate = lastWorkingDate;
+	}
+
+	public Boolean getWorkingStatus() {
+		return workingStatus;
+	}
+
+	public void setWorkingStatus(Boolean workingStatus) {
+		this.workingStatus = workingStatus;
+	}
 	private List<String> listBatches;
 	
 	public String getReposibility() {

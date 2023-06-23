@@ -13,11 +13,13 @@ public interface StudentService {
 	
 	public StudentDTO fetchStudentByEmail(String email);
 	
-	public StudentDTO fetchStudentByNameAndBatchAndDepartment(Map<String,String> map);
+	public List<StudentDTO> fetchStudentByNameAndBatchAndDepartment(Map<String,String> map);
 	
-	public void deleteStudentById(Long id);
+	public String deleteStudentById(Long id);
 	
 	public String saveAndUpdateStudent(Student student);
 	
 	public List<StudentDTO> getAllStudent();
+	
+	public StudentDTO fetchStudentByID(Long id);
 }

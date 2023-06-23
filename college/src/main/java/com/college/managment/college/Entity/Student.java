@@ -2,13 +2,14 @@ package com.college.managment.college.Entity;
 
 import java.util.Map;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection="student")
 public class Student {
 
 	@Id
-	private ObjectId id;
+	private Long id;
 	
 	private String name;
 	
@@ -28,17 +29,17 @@ public class Student {
 	
 	private String motherName;
 	
-	private Map<String,Integer> subjects;
+	private Map<String,String>  subjects;
 
 	public String getName() {
 		return name;
 	}
-
-	public long getId() {
+	
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -106,19 +107,20 @@ public class Student {
 		this.motherName = motherName;
 	}
 
-	public Map<String, Integer> getSubjects() {
-		return subjects;
-	}
-
-	public void setSubjects(Map<String, Integer> subjects) {
-		this.subjects = subjects;
-	}
-
 	public String getRole() {
 		return role;
 	}
-	
+
+	public Map<String, String> getSubjects() {
+		return subjects;
+	}
+
+	public void setSubjects(Map<String, String> subjects) {
+		this.subjects = subjects;
+	}
+
 	public Student() {
 		
 	}
+
 }

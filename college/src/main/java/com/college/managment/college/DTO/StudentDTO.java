@@ -24,7 +24,7 @@ public class StudentDTO {
 	
 	private String motherName;
 	
-	private Map<String,Integer> subjects;
+	private Map<String,String> subjects;
 
 	
 	public long getId() {
@@ -91,12 +91,16 @@ public class StudentDTO {
 		this.motherName = motherName;
 	}
 
-	public Map<String, Integer> getSubjects() {
+	public Map<String, String> getSubjects() {
 		return subjects;
 	}
 
-	public void setSubjects(Map<String, Integer> subjects) {
+	public void setSubjects(Map<String, String> subjects) {
 		this.subjects = subjects;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public String getRole() {
