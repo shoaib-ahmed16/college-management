@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Admin {
 
 	@Id
-	private long id;
+	private Long id;
 	
 	private String name;
 	
@@ -19,8 +19,13 @@ public class Admin {
     
     private String spouseOrHusbandName;
 	
-	private final String role ="ADMIN";
+	private String role ="ADMIN";
 	
+	
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 	public String getMarriageStatus() {
 		return marriageStatus;
 	}
@@ -39,11 +44,11 @@ public class Admin {
 
 	
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

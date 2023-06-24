@@ -26,7 +26,7 @@ public class TeacherDTO {
 	
 	private List<String> listBatches;
 	
-    private double salary;
+    private Double salary;
 	
 	private String joiningDate;
 	
@@ -34,11 +34,11 @@ public class TeacherDTO {
 	
 	private Boolean workingStatus;
 
-	public double getSalary() {
+	public Double getSalary() {
 		return salary;
 	}
 
-	public void setSalary(double salary) {
+	public void setSalary(Double salary) {
 		this.salary = salary;
 	}
 
@@ -66,11 +66,11 @@ public class TeacherDTO {
 		this.workingStatus = workingStatus;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -160,5 +160,6 @@ public class TeacherDTO {
 		this.joiningDate=teacher.getJoiningDate();
 		this.lastWorkingDate=teacher.getLastWorkingDate();
 		this.workingStatus=teacher.getWorkingStatus();
+		this.name=teacher.getName();
 	}
 }

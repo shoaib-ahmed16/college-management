@@ -17,11 +17,13 @@ public interface TeacherService {
 		
 		public TeacherDTO fetchTeacherById(Long teacherId);
 		
-		public void deleteTeacherById(Long id);
+		public String deleteTeacherById(Long id);
 		
 		public String saveAndUpdateTeacher(Teacher teacher);
 		
 		public List<TeacherEmployementRecordDTO> getTeachersEmployeementRecords();
 		
-		public TeacherEmployementRecordDTO getTeacherEmployeementRecordByEmailId(String email,Long id);
+		public TeacherEmployementRecordDTO getTeacherEmployeementRecordByEmailId(String email);
+		
+		public TeacherEmployementRecordDTO getTeacherEmployeementRecordById(Long teacherId);
 }

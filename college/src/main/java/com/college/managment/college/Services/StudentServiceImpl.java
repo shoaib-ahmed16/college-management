@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,8 @@ import com.college.managment.college.Repository.StudentRepository;
 @Service
 public class StudentServiceImpl implements StudentService{
 
+	private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
+	
 	@Autowired 
 	private StudentRepository studentRepo;
 

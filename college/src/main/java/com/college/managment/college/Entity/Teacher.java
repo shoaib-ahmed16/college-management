@@ -29,7 +29,7 @@ public class Teacher {
 	
 	private String reposibility;
 	
-	private double salary;
+	private Double salary;
 	
 	private String joiningDate;
 	
@@ -37,11 +37,13 @@ public class Teacher {
 	
 	private Boolean workingStatus;
 	
-	public double getSalary() {
+	private List<String> listBatches;
+	
+	public Double getSalary() {
 		return salary;
 	}
 
-	public void setSalary(double salary) {
+	public void setSalary(Double salary) {
 		this.salary = salary;
 	}
 
@@ -68,7 +70,6 @@ public class Teacher {
 	public void setWorkingStatus(Boolean workingStatus) {
 		this.workingStatus = workingStatus;
 	}
-	private List<String> listBatches;
 	
 	public String getReposibility() {
 		return reposibility;
