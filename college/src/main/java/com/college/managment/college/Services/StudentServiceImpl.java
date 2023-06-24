@@ -69,13 +69,13 @@ public class StudentServiceImpl implements StudentService{
 				throw new StudentNullPointerException("Name detail is must get the Students record");
 			}
 			if(map.get("batch")!=null) {
-				name =String.valueOf(map.get("batch"));
+				batch =String.valueOf(map.get("batch"));
 			}else {
 				logger.error("Batch detail is must get the Students record");
 				throw new StudentNullPointerException("Batch detail is must get the Students record");
 			}
 			if(map.get("department")!=null) {
-				name =String.valueOf(map.get("department"));
+				department =String.valueOf(map.get("department"));
 			}else {
 				logger.error("Department detail is must get the Students record");
 				throw new StudentNullPointerException("Department detail is must get the Students record");
@@ -99,43 +99,6 @@ public class StudentServiceImpl implements StudentService{
 			logger.info("Returning the Students record on the Bases of Name, Batch, Department they belong");
 			logger.debug("Returning the Students record on the Bases of Name, Batch, Department they belong");
 			return resStudents;
-	}
-
-	@Override
-	public String saveAndUpdateStudent(Student student) {
-		if(student.getId()!=null) {
-			logger.info("Start fetching for student Record on the bases of Student Id: "+student.getId());
-		    Optional<Student> stud =studentRepo.findById(student.getId());
-			 if(stud.isPresent())
-			 {
-				 logger.info("Get student Record search on the bases of Student Id: "+student.getId());
-				 logger.info("start Updating the field value change for the fetch Student Record: ");
-				 Student studs=stud.get();
-				 studs.setBatch(student.getBatch());
-				 studs.setDateOfBirth(student.getDateOfBirth());
-				 studs.setDepartment(student.getDepartment());
-				 studs.setFatherName(student.getFatherName());
-				 studs.setMotherName(student.getMotherName());
-				 studs.setRole(student.getRole());
-				 studs.setName(student.getName());
-				 studs.setSubjects(student.getSubjects());
-				 logger.info("Update all the field value change for the fetch Student Record: ");
-				 studentRepo.save(student);
-				 logger.info("Student Record: updated successfully!");
-				 return "Student Record is updated successfully!";
-			 }else
-			 {
-				 logger.info("Student Record: start Saving...");
-				 studentRepo.save(student);
-				 logger.info("Student Record: saved successfully!");
-				 return "Student Record is saved successfully!";
-			 }
-		}else {
-			 logger.info("Student Record: start Saving...");
-			 studentRepo.save(student);
-			 logger.info("Student Record: saved successfully!");
-			 return "Student Record is saved successfully!";
-		}
 	}
 
 	@Override
@@ -181,6 +144,45 @@ public class StudentServiceImpl implements StudentService{
 		}
 		logger.error("No Record found for student using Student Id: "+id);
 		throw new StudentDoesNotExistException("No Record found for student using Student Id: "+id);
+	}
+
+	@Override
+	public String saveStudent(Student student) {
+		try {
+			 logger.info("Student Record: start Saving...");
+			 studentRepo.save(student);
+			 logger.info("Student Record: saved successfully!");
+			 return "Student Record is saved successfully!";
+		}catch(Exception exc) {
+			logger.error("Unknown server error occured while saving Student record: "+exc.getMessage());
+			throw new StudentUnknownErrorException("Unknown server error occured while saving Student record: "+exc.getMessage());
+		}
+	}
+
+	@Override
+	public String updateStudent(Student student) {
+		logger.info("Start fetching for student Record on the bases of Student Id: "+student.getId());
+	    Optional<Student> stud =studentRepo.findById(student.getId());
+		 if(stud.isPresent())
+		 {
+			 logger.info("Get student Record search on the bases of Student Id: "+student.getId());
+			 logger.info("start Updating the field value change for the fetch Student Record: ");
+			 Student studs=stud.get();
+			 studs.setBatch(student.getBatch());
+			 studs.setDateOfBirth(student.getDateOfBirth());
+			 studs.setDepartment(student.getDepartment());
+			 studs.setFatherName(student.getFatherName());
+			 studs.setMotherName(student.getMotherName());
+			 studs.setRole(student.getRole());
+			 studs.setName(student.getName());
+			 studs.setSubjects(student.getSubjects());
+			 logger.info("Update all the field value change for the fetch Student Record: ");
+			 studentRepo.save(student);
+			 logger.info("Student Record: updated successfully!");
+			 return "Student Record is updated successfully!";
+		 }
+		 logger.error("No Student Record found for the StudentId: "+student.getId());
+		 throw new StudentDoesNotExistException("No Student Record found for the StudentId: "+student.getId());
 	}
 
 }

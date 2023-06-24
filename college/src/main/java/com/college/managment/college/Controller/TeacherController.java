@@ -6,6 +6,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,91 +20,84 @@ import com.college.managment.college.DTO.TeacherDTO;
 import com.college.managment.college.DTO.TeacherEmployementRecordDTO;
 import com.college.managment.college.Entity.Teacher;
 import com.college.managment.college.Exceptions.TeacherNullPointerException;
-import com.college.managment.college.Exceptions.TeacherUnknownServerError;
-import com.college.managment.college.Services.StudentService;
 import com.college.managment.college.Services.TeacherService;
-import com.college.managment.college.Services.TeacherServiceImpl;
 
 @RestController
 @RequestMapping("/api/v1/teacher")
 public class TeacherController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(TeacherServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(TeacherController.class);
+	
 	@Autowired
 	private TeacherService teacherService;
 	
-	@Autowired
-	private StudentService studentService;
-	
 	@GetMapping("/fetchAll")
-	public List<TeacherDTO> getAllTeacher() {
-		return teacherService.fetchAllTeacher();
+	public ResponseEntity<List<TeacherDTO>> getAllTeacher() {
+		return new ResponseEntity<List<TeacherDTO>>(teacherService.fetchAllTeacher(),HttpStatus.OK);
 	}
-	
 
 	@GetMapping("/fetchById/{id}")
-	public TeacherDTO getTeacherByiId(@PathVariable("id") Long id) {
-		return teacherService.fetchTeacherById(id);
+	public ResponseEntity<TeacherDTO> getTeacherByiId(@PathVariable("id") Long id) {
+		return new ResponseEntity<TeacherDTO>(teacherService.fetchTeacherById(id),HttpStatus.OK);
 	}
 	
 	@GetMapping("/fetchByEmail")
-	public TeacherDTO getTeacherByEmail(@RequestBody Map<String,String> params) {
+	public ResponseEntity<TeacherDTO> getTeacherByEmail(@RequestBody Map<String,String> params) {
 		if(params.get("email")!=null)
-		  return teacherService.fetchTeacherByEmail(String.valueOf(params.get("email")));
-		
+		  return new ResponseEntity<TeacherDTO>(teacherService.fetchTeacherByEmail(String.valueOf(params.get("email"))),HttpStatus.OK);
 		logger.error("Getting email Id empty or null value");
 		throw new RuntimeException("Getting email Id empty or null value");
 	}
 	
 	@GetMapping("/fetchByNameAndDepartmentAndSubject")
-	public List<TeacherDTO> getTeacherByNameAndDepartmentAndSubject(@RequestBody Map<String,String> params) {
+	public ResponseEntity<List<TeacherDTO>> getTeacherByNameAndDepartmentAndSubject(@RequestBody Map<String,String> params) {
 		if(params!=null)
-			return teacherService.fetchTeacherByNameAndDepartmentAndSubject(params);
+			return new ResponseEntity<List<TeacherDTO>>(teacherService.fetchTeacherByNameAndDepartmentAndSubject(params),HttpStatus.OK);
 		logger.error("Get null value for the map: map cannot be null");
 		throw new TeacherNullPointerException("Get null value for the map: map cannot be null");
 	}
-	@GetMapping("/fetchEmployeementRecordById")
-	public TeacherEmployementRecordDTO getTeacherEmployeementRecordByld(@RequestBody Map<String,String> params) {
+	@GetMapping("/fetchEmployeementRecordByEmailId")
+	public ResponseEntity<TeacherEmployementRecordDTO> getTeacherEmployeementRecordByld(@RequestBody Map<String,String> params) {
 		if(params.get("email")!=null) 
-			return teacherService.getTeacherEmployeementRecordByEmailId(String.valueOf(params.get("email")));
+			return new ResponseEntity<TeacherEmployementRecordDTO>(teacherService.getTeacherEmployeementRecordByEmailId(String.valueOf(params.get("email"))),HttpStatus.OK);
 		logger.error("Getting email Id empty or null value");
 		throw new TeacherNullPointerException("Getting email Id empty or null value");
 		
 	}
 	
-	@GetMapping("/fetchEmployeementRecordByEmailId/{teacherId}")
-	public TeacherEmployementRecordDTO getTeacherEmployeementRecordByEmaild(@PathVariable("teacherId") Long teacherId) {
+	@GetMapping("/fetchEmployeementRecordById/{teacherId}")
+	public ResponseEntity<TeacherEmployementRecordDTO> getTeacherEmployeementRecordByEmaild(@PathVariable("teacherId") Long teacherId) {
 		if(teacherId!=null)
-			return teacherService.getTeacherEmployeementRecordById(teacherId);
+			return new  ResponseEntity<TeacherEmployementRecordDTO>(teacherService.getTeacherEmployeementRecordById(teacherId),HttpStatus.OK);
 		logger.error("Getting Teacher Id empty or null value");
 		throw new TeacherNullPointerException("Getting Teacher Id empty or null value");
 	}
 	
 	@GetMapping("/fetchAllEmployeementRecords")
-	public List<TeacherEmployementRecordDTO> getAllTeacherEmployeementRecord() {
-		return teacherService.getTeachersEmployeementRecords();
+	public ResponseEntity<List<TeacherEmployementRecordDTO>> getAllTeacherEmployeementRecord() {
+		return new ResponseEntity<List<TeacherEmployementRecordDTO>>(teacherService.getTeachersEmployeementRecords(),HttpStatus.OK);
 	}
 	
 	@PostMapping("/save")
-	public String saveTeacher(@RequestBody Teacher teacher) {
+	public ResponseEntity<String> saveTeacher(@RequestBody Teacher teacher) {
 		if(teacher!=null)
-			return teacherService.save(teacher);
+			return new ResponseEntity<String>(teacherService.save(teacher),HttpStatus.ACCEPTED);
 		logger.error("Getting Teacher Object as null value");
 		throw new TeacherNullPointerException("Getting Teacher Object as null value");
 	}
 	
 	@PostMapping("/update")
-	public String updateTeacher(@RequestBody Teacher teacher) {
+	public ResponseEntity<String> updateTeacher(@RequestBody Teacher teacher) {
 		if(teacher.getId()!=null)
-			return teacherService.update(teacher);
+			return new ResponseEntity<String>(teacherService.update(teacher),HttpStatus.ACCEPTED);
 		logger.error("Getting Teacher Object without Teacher Id: Not a valid Object for this Api call");
 		throw new TeacherNullPointerException("Getting Teacher Object without Teacher Id: Not a valid Object for this Api call");
 	}
 	
 	@DeleteMapping("/deleteBy/{teacherId}")
-	public String deleteStudent(@PathVariable("teacherId") Long teacherId) {
+	public ResponseEntity<String> deleteStudent(@PathVariable("teacherId") Long teacherId) {
 		if(teacherId!=null)
-		   return teacherService.deleteTeacherById(teacherId);
+		   return new ResponseEntity<String>(teacherService.deleteTeacherById(teacherId),HttpStatus.ACCEPTED);
 		logger.error("Getting teacher id as null value");
 		throw new TeacherNullPointerException("Getting teacher id as null value");
 	}

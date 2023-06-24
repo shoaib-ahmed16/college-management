@@ -17,7 +17,9 @@ public interface StudentService {
 	
 	public String deleteStudentById(Long id);
 	
-	public String saveAndUpdateStudent(Student student);
+	public String saveStudent(Student student);
+	
+	public String updateStudent(Student student);
 	
 	public List<StudentDTO> getAllStudent();
 	

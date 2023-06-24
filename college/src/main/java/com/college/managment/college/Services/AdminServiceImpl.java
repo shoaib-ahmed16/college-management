@@ -34,37 +34,7 @@ public class AdminServiceImpl implements AdminService {
 		}
 	}
 	
-	@Override
-	public String saveAndUpdate(Admin admin) {
-		String message ="Error Occured while shaving the Admin Record!";
-		logger.info("Inside Admin Service class to save or update the Admin object: ",admin.getClass().getName());
-		if(admin.getId()!=null) {
-				logger.info("Start fetching the Object if Admin Id already Exist in the database Record");
-				Optional<Admin> fetchAdmin =adminRepository.findById(admin.getId());
-				if(fetchAdmin.isPresent()) {
-					logger.info("Get the Admin Object which is already Exist in the database Record for the provided Id");
-					logger.info("Start Updating the changed field for the Existing Admin Object");
-						Admin adminToUpdate=fetchAdmin.get();
-						adminToUpdate.setEmail(admin.getEmail());
-						adminToUpdate.setMarriageStatus(admin.getMarriageStatus());
-						adminToUpdate.setName(admin.getName());
-						adminToUpdate.setRole(admin.getRole());
-						adminRepository.save(adminToUpdate);
-						logger.info("Admin Object details updated Successfully!");
-					return "Admin Record save successfully!";
-				}else {
-					logger.info("Start saving the Admin Object");
-					adminRepository.save(admin);
-					logger.info("Admin Object saved Successfully!");
-					return "Admin Record save successfully!";
-				}
-		}else {
-			logger.info("Start saving the Admin Object");
-			adminRepository.save(admin);
-			logger.info("Admin Object saved Successfully!");
-			return "Admin Record save successfully!";
-		}
-	}
+
 	@Override
 	public AdminDTO fetchByEmailId(String email) {
 		logger.info("Start Fetching the Admin details using the emailId: "+email);
@@ -92,6 +62,40 @@ public class AdminServiceImpl implements AdminService {
 		}else
 			logger.error("No Record found for Admin using adminID: "+id);
 			throw new AdminDoesNotExistException("Delete Operation not successful as no Admin Reocord found! for the Admin Id: "+id);
+	}
+
+	@Override
+	public String saveAdmin(Admin admin) {
+		try {
+			logger.info("Start saving the Admin details into records");
+			adminRepository.save(admin);
+			logger.info("Admin details saved Successfully!");
+			return "Admin details save successfully!";
+		}catch(Exception exc) {
+			logger.error("Unknown server error occured while saving Admin details to the records");
+			throw new AdminUnknownServerError("Unknown server error occured while saving Admin details to the records");
+		}
+	}
+
+	@Override
+	public String updateAdmin(Admin admin) {
+		logger.info("Start fetching the Admin Record using Admin Id: "+admin.getId());
+		Optional<Admin> fetchAdmin =adminRepository.findById(admin.getId());
+		if(fetchAdmin.isPresent()) {
+			logger.info("Get the Admin record for the Admin Id: "+admin.getId());
+			logger.info("Start Updating the changed field for the Existing Admin record");
+				Admin adminToUpdate=fetchAdmin.get();
+				adminToUpdate.setEmail(admin.getEmail());
+				adminToUpdate.setMarriageStatus(admin.getMarriageStatus());
+				adminToUpdate.setName(admin.getName());
+				adminToUpdate.setRole(admin.getRole());
+				logger.warn("Start updating Admin Record details!");
+				adminRepository.save(adminToUpdate);
+				logger.info("Admin Record details updated Successfully!");
+			return "Admin Record updated successfully!";
+		}
+		logger.error("No Admin Record found for the Admin Id: "+admin.getId());
+		throw new AdminDoesNotExistException("No Admin Record found for the Admin Id: "+admin.getId());
 	}
 	
 }

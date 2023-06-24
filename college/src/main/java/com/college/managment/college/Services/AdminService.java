@@ -11,7 +11,9 @@ public interface AdminService {
 	
 	public AdminDTO fetchById(Long id);
 	
-	public String saveAndUpdate(Admin admin);
+	public String saveAdmin(Admin admin);
+	
+	public String updateAdmin(Admin admin);
 }
 
 
