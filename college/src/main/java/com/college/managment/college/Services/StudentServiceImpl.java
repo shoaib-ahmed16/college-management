@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.college.managment.college.DTO.StudentDTO;
 import com.college.managment.college.Entity.Student;
+import com.college.managment.college.Exceptions.StudentDoesNotExistException;
+import com.college.managment.college.Exceptions.StudentNullPointerException;
+import com.college.managment.college.Exceptions.StudentUnknownErrorException;
 import com.college.managment.college.Repository.StudentRepository;
 
 
@@ -23,130 +26,161 @@ public class StudentServiceImpl implements StudentService{
 	@Autowired 
 	private StudentRepository studentRepo;
 
-	
+
 	@Override
 	public void saveStudents(List<Student> students) {
-		// TODO Auto-generated method stub
 		try {
+		logger.info("Start Saving list of the Students.");
 			for(Student s:students) {
 				studentRepo.save(s);
 			}
+		logger.info("All Student's records save successfully");
 		}catch(Exception exc) {
-			exc.getStackTrace();
+			logger.error("Unknown Server error occur while saving the list of students!");
+			throw new StudentUnknownErrorException("Unknown Server error occur while saving the list of students :"+exc.getMessage());
 		}
 	}
 
 	@Override
 	public StudentDTO fetchStudentByEmail(String email) {
-		Student stud=null;
-		try {
-			stud = studentRepo.findByEmail(email).orElseThrow(()-> new Exception(""));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		logger.info("Start fetching Record for Student using email id: "+email);
+		Optional<Student> student = studentRepo.findByEmail(email);
+		if(student.isPresent()) {
+			logger.info("Get Record for Student using email id: "+email);
+			Student resStud =student.get();
+			return new StudentDTO(resStud);
+		}else {
+			logger.error("No Student Record found for Email Id: "+email);
+			logger.debug("No Student Record found for Email Id: "+email);
+			throw new StudentDoesNotExistException("No Student Record found for Email Id: "+email);
 		}
-		return new StudentDTO(stud);
+		
 	}
-
+	
 	@Override
 	public List<StudentDTO> fetchStudentByNameAndBatchAndDepartment(Map<String, String> map) {
-		try {
 			String name =null;
 			String batch=null;
 			String department=null;
 			if(map.get("name")!=null) {
 				name =String.valueOf(map.get("name"));
 			}else {
-				throw new Exception("Name detail is must get the record");
+				logger.error("Name detail is must get the Students record");
+				throw new StudentNullPointerException("Name detail is must get the Students record");
 			}
 			if(map.get("batch")!=null) {
 				name =String.valueOf(map.get("batch"));
 			}else {
-				throw new Exception("Batch detail is must get the record");
+				logger.error("Batch detail is must get the Students record");
+				throw new StudentNullPointerException("Batch detail is must get the Students record");
 			}
 			if(map.get("department")!=null) {
 				name =String.valueOf(map.get("department"));
 			}else {
-				throw new Exception("Department detail is must get the record");
+				logger.error("Department detail is must get the Students record");
+				throw new StudentNullPointerException("Department detail is must get the Students record");
 			}
-
-			List<Student> students =studentRepo.findByNameAndBatchAndDepartment(name, batch, department);
+			logger.info("Start Fetching the Students record on the Bases of Name, Batch, Department they belong");
+			logger.debug("Start Fetching the Students record on the Bases of Name, Batch, Department they belong");
+			List<Student> students=new ArrayList<>();
 			List<StudentDTO> resStudents =new ArrayList<>();
-			for(Student s:students) {
-				resStudents.add(new StudentDTO(s));
+			try {
+				students=studentRepo.findByNameAndBatchAndDepartment(name, batch, department);
+				logger.info("Get the Students record on the Bases of Name, Batch, Department they belong");
+				logger.debug("Get the Students record on the Bases of Name, Batch, Department they belong");
+					for(Student s:students) {
+						resStudents.add(new StudentDTO(s));
+					}
+			}catch(Exception exc) {
+				logger.error("Unknown Server error occured while fetching the Students Record");
+				logger.debug("Unknown Server error occured while fetching the Students Record");
+				throw new StudentUnknownErrorException("Unknown Server error occured while fetching the Students Record");
 			}
+			logger.info("Returning the Students record on the Bases of Name, Batch, Department they belong");
+			logger.debug("Returning the Students record on the Bases of Name, Batch, Department they belong");
 			return resStudents;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	@Override
 	public String saveAndUpdateStudent(Student student) {
-		// TODO Auto-generated method stub
-		String message ="Student Record is not saved unknown error occured!";
 		if(student.getId()!=null) {
-		 Optional<Student> stud =studentRepo.findById(student.getId());
-		 if(stud.isPresent())
-		 {
-			 Student studs=stud.get();
-			 studs.setBatch(student.getBatch());
-			 studs.setDateOfBirth(student.getDateOfBirth());
-			 studs.setDepartment(student.getDepartment());
-			 studs.setFatherName(student.getFatherName());
-			 studs.setMotherName(student.getMotherName());
-			 studs.setRole(student.getRole());
-			 studs.setName(student.getName());
-			 studs.setSubjects(student.getSubjects());
+			logger.info("Start fetching for student Record on the bases of Student Id: "+student.getId());
+		    Optional<Student> stud =studentRepo.findById(student.getId());
+			 if(stud.isPresent())
+			 {
+				 logger.info("Get student Record search on the bases of Student Id: "+student.getId());
+				 logger.info("start Updating the field value change for the fetch Student Record: ");
+				 Student studs=stud.get();
+				 studs.setBatch(student.getBatch());
+				 studs.setDateOfBirth(student.getDateOfBirth());
+				 studs.setDepartment(student.getDepartment());
+				 studs.setFatherName(student.getFatherName());
+				 studs.setMotherName(student.getMotherName());
+				 studs.setRole(student.getRole());
+				 studs.setName(student.getName());
+				 studs.setSubjects(student.getSubjects());
+				 logger.info("Update all the field value change for the fetch Student Record: ");
+				 studentRepo.save(student);
+				 logger.info("Student Record: updated successfully!");
+				 return "Student Record is updated successfully!";
+			 }else
+			 {
+				 logger.info("Student Record: start Saving...");
+				 studentRepo.save(student);
+				 logger.info("Student Record: saved successfully!");
+				 return "Student Record is saved successfully!";
+			 }
+		}else {
+			 logger.info("Student Record: start Saving...");
 			 studentRepo.save(student);
-			 return "Student Record is updated successfully!";
-		 }else
-		 {
-			 studentRepo.save(student);
+			 logger.info("Student Record: saved successfully!");
 			 return "Student Record is saved successfully!";
-		 }
 		}
-		return message; 
 	}
 
 	@Override
 	public String deleteStudentById(Long id) {
-		String message="While deleting Student Record unknown Error occured!";
-		try {
-			Student stud =studentRepo.findById(id).orElseThrow(()->new Exception(""));
-			studentRepo.delete(stud);
-			return "Student Record deleted Successfully!";
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return message;
+			logger.info("Start Fetching the Student Record Using the Student Id: "+id);
+			Optional<Student> student =studentRepo.findById(id);
+			if(student.isPresent()) {
+				logger.info("Get the Student Record Using the Student Id: "+id);
+				logger.warn("Start Deleting Student Record for the Student Id: "+id);
+				studentRepo.delete(student.get());
+				logger.info("Student Record: Deleted Successfully for Student Id "+id);
+				return "Student Record deleted Successfully!";
+			}
+			logger.error("No Student Record found for Student Id "+id);
+			throw new StudentDoesNotExistException("No Student Record found for Student Id: "+id);
 	}
 
 	@Override
 	public List<StudentDTO> getAllStudent() {
-		List<StudentDTO> list= new ArrayList<>();
-		List<Student> findALl =studentRepo.findAll();
-		for(Student s:findALl) {
-			list.add(new StudentDTO(s));
+		try {
+			logger.info("Start fetching the Students Record");
+				List<Student> findAllStud =studentRepo.findAll();
+			logger.info("Get the fetched Students Record");
+			List<StudentDTO> resStudlist= new ArrayList<>();
+				for(Student s:findAllStud) {
+					resStudlist.add(new StudentDTO(s));
+				}
+			logger.info("returning fetched Students Record");
+			return resStudlist;
+		}catch(Exception exc) {
+			logger.error("Unknown server Error occured while fetching the Students Record");
+			throw new StudentUnknownErrorException("Unknown server Error occured while fetching the Students Record: "+exc.getMessage());
 		}
-		return list;
 	}
 
 	@Override
 	public StudentDTO fetchStudentByID(Long id) {
-		// TODO Auto-generated method stub
-		Student student =null;
-		try {
-			student =studentRepo.findById(id).orElseThrow(()->new Exception(""));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		logger.info("Start fetching the Student Record using Student Id: "+id);
+		Optional<Student> student =studentRepo.findById(id);
+		if(student.isPresent()) {
+			logger.info("Get the Student Record using Student Id: "+id);
+			return new StudentDTO(student.get());
 		}
-		return new StudentDTO(student);
+		logger.error("No Record found for student using Student Id: "+id);
+		throw new StudentDoesNotExistException("No Record found for student using Student Id: "+id);
 	}
 
 }

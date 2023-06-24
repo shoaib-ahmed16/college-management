@@ -19,7 +19,9 @@ public interface TeacherService {
 		
 		public String deleteTeacherById(Long id);
 		
-		public String saveAndUpdateTeacher(Teacher teacher);
+		public String save(Teacher teacher);
+		
+		public String update(Teacher teacher);
 		
 		public List<TeacherEmployementRecordDTO> getTeachersEmployeementRecords();
 		

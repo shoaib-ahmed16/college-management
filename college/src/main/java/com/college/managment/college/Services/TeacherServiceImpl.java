@@ -63,14 +63,19 @@ public class TeacherServiceImpl implements TeacherService {
 				logger.error("Teacher Subject cannot be Empty or null value");
 				throw new TeacherUnknownServerError("Teacher Subject cannot be Empty or null");
 			}
-			logger.info("Start Fetching the List of  Teachers Detial using Teacher Name: "+name+" Subject: "+subject+" Department: "+department);
+			List<TeacherDTO> teachersResult = new ArrayList<>();
+			try {
+				logger.info("Start Fetching the List of  Teachers Detial using Teacher Name: "+name+" Subject: "+subject+" Department: "+department);
 				List<Teacher> teachersList=teacherRepo.findByNameAndDepartmentAndSubject(name, department, subject);
-				List<TeacherDTO> teachersResult = new ArrayList<>();
-				for(Teacher t:teachersList) {
-					teachersResult.add(new TeacherDTO(t));
-				}
-			logger.info("Get the Teachers List by Name, Department and Subject they Teach");	
-		return teachersResult;
+					for(Teacher t:teachersList) {
+						teachersResult.add(new TeacherDTO(t));
+					}
+				logger.info("Get the Teachers List by Name, Department and Subject they Teach");
+			}catch(Exception exc) {
+				logger.error("Unknown server error occured while fetching the Teachers List: "+exc.getMessage());
+				throw new TeacherUnknownServerError("Unknown server error occured while fetching the Teachers List: "+exc.getMessage());
+			}
+			return teachersResult;
 	}
 
 	@Override
@@ -86,9 +91,99 @@ public class TeacherServiceImpl implements TeacherService {
 		return "Teacher record deleted successfully";
 	}
 
+	
 	@Override
-	public String saveAndUpdateTeacher(Teacher teacher) {
-		if(teacher.getId()!=null) {
+	public List<TeacherDTO> fetchAllTeacher() {
+		List<TeacherDTO> resTeacher =new ArrayList<>();
+		try {
+			logger.info("Start fetching all Teacher's Records");	
+			List<Teacher> teacherList = teacherRepo.findAll();
+			logger.info("Get all Teachers Record");
+			for(Teacher t:teacherList) {
+				resTeacher.add(new TeacherDTO(t));
+			}
+			logger.info("Returing List of All teacher's records");
+		}catch(Exception exc) {
+			logger.error("Unknown server errors occured while fetching teachers list: "+exc.getMessage());
+			throw new TeacherUnknownServerError("Unknown server errors occured while fetching teachers list: "+exc.getMessage());
+		}
+		return resTeacher;
+	}
+
+	@Override
+	public List<TeacherEmployementRecordDTO> getTeachersEmployeementRecords() {
+		List<TeacherEmployementRecordDTO> resTeacher =new ArrayList<>();
+		try {
+		logger.info("Start fetching Teacher's  Records");
+			List<Teacher> teacherList = teacherRepo.findAll();
+		logger.info("Successfully fetch all Teacher's Records");
+			for(Teacher t:teacherList) {
+				resTeacher.add(new TeacherEmployementRecordDTO(t));
+			}
+		logger.info("Returning the Teacher's Employeement Records list");
+		}catch(Exception exc) {
+			logger.error("unknown server error occured while fetching the Teachers list: "+exc.getMessage());
+			throw new TeacherUnknownServerError("unknown server error occured while fetching the Teachers list: "+exc.getMessage());
+		}
+		return resTeacher;
+	}
+	
+
+	@Override
+	public TeacherDTO fetchTeacherById(Long teacherId) {
+		logger.info("Start fetching Teacher Record using TeacherId: "+teacherId);
+		Optional<Teacher>  teacher=teacherRepo.findById(teacherId);
+		if(teacher.isPresent()) {
+			logger.info("Get Teacher Record using Teacher Id: "+teacherId);
+			return new TeacherDTO(teacher.get());
+		}
+		logger.debug("No Teacher record found for the TeacherId: "+teacherId);
+		logger.error("No Teacher record found for the TeacherId: "+teacherId);
+		throw new TeacherNotExistException("No Teacher record found for the TeacherId: "+teacherId);
+	}
+
+	@Override
+	public TeacherEmployementRecordDTO getTeacherEmployeementRecordByEmailId(String email) {
+		logger.info("Start fetching Teacher Record using Teacher Email Id: "+email);
+		Optional<Teacher> teacher =teacherRepo.findByEmail(email);
+		if(teacher.isPresent()) {
+			//.orElseThrow(()->;
+			logger.info("Get Teacher Record using Teacher Email Id: "+email);
+			return new TeacherEmployementRecordDTO(teacher.get());
+		}
+		logger.error("No Record found for the Teacher Email Id");
+		logger.debug("No Record found for the Teacher Email Id");
+		throw new TeacherNotExistException("No Record found the teacher using email Id: "+email);
+}
+
+	@Override
+	public TeacherEmployementRecordDTO getTeacherEmployeementRecordById(Long teacherId) {
+		logger.info("Start fetching Teacher Record using Teacher  Id: "+teacherId);
+			Optional<Teacher> teacher =teacherRepo.findById(teacherId);
+		if(teacher.isPresent()) {
+			logger.info("get Teacher Record using Teacher Id: "+teacherId);
+			return new TeacherEmployementRecordDTO(teacher.get());
+		}
+		logger.error("No Record found the teacher using Teacher Id: "+teacherId);
+		logger.debug("No Record found the teacher using Teacher Id: "+teacherId);
+		throw new TeacherNotExistException("No Record found the teacher using Teacher Id: "+teacherId);
+	}
+
+	@Override
+	public String save(Teacher teacher) {
+		try {
+			logger.warn("Start Saving the Teacher Record");	
+			   teacherRepo.save(teacher);
+		    logger.info("Teacher record  saved successfully!");	
+		    return "Teacher record changes saved successfully!";
+		}catch(Exception exc) {
+			logger.error("Unknown Server error occured while saving Teacher Record: "+exc.getMessage());
+			throw new TeacherUnknownServerError("Unknown Server error occured while saving Teacher Record: "+exc.getMessage());
+		}
+	}
+
+	@Override
+	public String update(Teacher teacher) {
 			Optional<Teacher> teach=teacherRepo.findById(teacher.getId());
 			if(teach.isPresent())
 			{
@@ -110,96 +205,8 @@ public class TeacherServiceImpl implements TeacherService {
 					teacherRepo.save(teacherToUpdate);
 				logger.info("Teacher record changes saved successfully!");	
 				return "Teacher record changes saved successfully!";
-			}else {
-				//throw new TeacherNotExistException("No teacher Record found for the Teacher Id:"+teacher.getId());
-				logger.warn("Start Saving the Teacher Record");	
-				   teacherRepo.save(teacher);
-			    logger.info("Teacher record  saved successfully!");	
-			    return "Teacher record changes saved successfully!";
 			}
-				
-		}else {
-			logger.warn("Start Saving the Teacher record");	
-				teacherRepo.save(teacher);
-			logger.info("Teacher record changes saved successfully!");
-			return "Teacher record changes saved successfully!";
-		}
-		
-	}
-	
-	@Override
-	public List<TeacherDTO> fetchAllTeacher() {
-		logger.info("Start fetching all Teacher's Records");	
-			List<Teacher> teacherList = teacherRepo.findAll();
-		logger.info("Get all Teachers Record");
-		List<TeacherDTO> resTeacher =new ArrayList<>();
-		logger.warn("Start updating all fetched Teacher's Records into Returing List.");
-		logger.debug("Start updating all fetched Teacher's Records into Returing List.");
-			for(Teacher t:teacherList) {
-				resTeacher.add(new TeacherDTO(t));
-			}
-		logger.debug("All Teacher's Records successfully updated to the Returing List.");	
-		logger.info("All Teacher's Records successfully updated to the Returing List.");
-		logger.info("Returing List of All teacher's records");
-		return resTeacher;
-	}
-
-	@Override
-	public List<TeacherEmployementRecordDTO> getTeachersEmployeementRecords() {
-		logger.info("Start fetching Teacher's  Records");
-			List<Teacher> teacherList = teacherRepo.findAll();
-		logger.info("Successfully fetch all Teacher's Records");
-			List<TeacherEmployementRecordDTO> resTeacher =new ArrayList<>();
-		logger.warn("Start updating the List containing the Teacher's Employeement Records");
-		logger.debug("Start updating the List containing the Teacher's Employeement Records");
-			for(Teacher t:teacherList) {
-				resTeacher.add(new TeacherEmployementRecordDTO(t));
-			}
-		logger.debug("Successfully updated the List containing the Teacher's Employeement Records");
-		logger.info("Successfully updated the List containing the Teacher's Employeement Records");
-		logger.info("Returning the Teacher's Employeement Records list");
-		return resTeacher;
-	}
-	
-
-	@Override
-	public TeacherDTO fetchTeacherById(Long teacherId) {
-		if(teacherId!=null) {
-			logger.info("Start fetching Teacher Record using Teacher Id: "+teacherId);
-				Teacher  teacher=teacherRepo.findById(teacherId)
-						.orElseThrow(()->new TeacherNotExistException("No Teacher record found for the TeacherId: "+teacherId));
-			logger.info("Get Teacher Record using Teacher Id: "+teacherId);
-			return new TeacherDTO(teacher);
-		}
-		logger.debug("Getting null or Empty value for the TeacherId");
-		logger.error("Getting null or Empty value for the TeacherId");
-		throw new TeacherNullPointerException("To fetch Teacher Employeement Record Teacher Id cannot be null or Empty");
-	}
-
-	@Override
-	public TeacherEmployementRecordDTO getTeacherEmployeementRecordByEmailId(String email) {
-		if(email!=null) {
-			logger.info("Start fetching Teacher Record using Teacher Email Id: "+email);
-			Teacher teacher =teacherRepo.findByEmail(email).orElseThrow(()->new TeacherNotExistException("No Record found the teacher using email Id: "+email));
-			logger.info("Successfully fetching Teacher Record using Teacher Email Id: "+email);
-			return new TeacherEmployementRecordDTO(teacher);
-		}
-		logger.error("Getting null or Empty value for the Teacher Email Id");
-		logger.debug("Getting null or Empty value for the Teacher Email Id");
-		throw new TeacherNullPointerException("To fetch Teacher Employeement Record Email Id cannot be null or Empty");
-	}
-
-	@Override
-	public TeacherEmployementRecordDTO getTeacherEmployeementRecordById(Long teacherId) {
-		if(teacherId!=null) {
-			logger.info("Start fetching Teacher Record using Teacher  Id: "+teacherId);
-			Teacher teacher =teacherRepo.findById(teacherId).orElseThrow(()->new TeacherNotExistException("No Record found the teacher using Teacher Id: "+teacherId));
-			logger.info("Successfully fetching Teacher Record using Teacher Id: "+teacherId);
-			return new TeacherEmployementRecordDTO(teacher);
-		}
-		logger.error("Getting null or Empty value for the Teacher Id");
-		logger.debug("Getting null or Empty value for the Teacher Id");
-		throw new TeacherNullPointerException("To fetch Teacher Employeement Record Teacher Id cannot be null or Empty");
+			throw new TeacherNotExistException("No Previous Record found for the Teacher object to update the Existing Teacher Record.");
 	}
 
 }
