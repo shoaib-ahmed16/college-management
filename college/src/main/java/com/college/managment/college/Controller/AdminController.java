@@ -65,7 +65,7 @@ public class AdminController {
 		throw new AdminNullPointerException("Getting Admin Object without Admin Id or null value");
 	}
 	
-	 @RequestMapping(value="/admin", method = RequestMethod.POST)
+	 @RequestMapping(value="/save", method = RequestMethod.POST)
 	    public ResponseEntity<String> saveAdmin(@RequestBody Admin admin){
 			if(admin!=null)
 				return new ResponseEntity<String>(adminService.saveAdmin(admin),HttpStatus.ACCEPTED);
@@ -82,7 +82,5 @@ public class AdminController {
 		throw new AdminNullPointerException("Getting Admin Id null value");
 	
 	}
-	
-	
 	
 }

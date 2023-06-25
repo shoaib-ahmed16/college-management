@@ -10,7 +10,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.college.managment.college.DTO.LoginUser;
@@ -213,6 +212,7 @@ public class TeacherServiceImpl implements TeacherService {
 					teacherToUpdate.setSpouseOrHusbandName(teacher.getSpouseOrHusbandName());
 					teacherToUpdate.setSubject(teacher.getSubject());;
 					teacherToUpdate.setWorkingStatus(teacher.getWorkingStatus());
+					teacherToUpdate.setRole(teacher.getRole());
 				logger.warn("Start Saving the Teacher recoord with updated Fields values");	
 					teacherRepo.save(teacherToUpdate);
 				logger.info("Teacher record changes saved successfully!");	

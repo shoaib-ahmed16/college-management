@@ -10,7 +10,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.college.managment.college.DTO.LoginUser;
@@ -31,13 +30,14 @@ public class StudentServiceImpl implements StudentService{
 	private StudentRepository studentRepo;
 
 	@Override
-	public void saveStudents(List<Student> students) {
+	public String saveStudents(List<Student> students) {
 		try {
 		logger.info("Start Saving list of the Students.");
 			for(Student s:students) {
 				studentRepo.save(s);
 			}
 		logger.info("All Student's records save successfully");
+		return "All Student's records save successfully";
 		}catch(Exception exc) {
 			logger.error("Unknown Server error occur while saving the list of students!");
 			throw new StudentUnknownErrorException("Unknown Server error occur while saving the list of students :"+exc.getMessage());

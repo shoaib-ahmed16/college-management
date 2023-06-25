@@ -10,7 +10,7 @@ import com.college.managment.college.Entity.Student;
 
 public interface StudentService {
 
-    public void saveStudents(List<Student> students);
+    public String saveStudents(List<Student> students);
 	
 	public StudentDTO fetchStudentByEmail(String email);
 	

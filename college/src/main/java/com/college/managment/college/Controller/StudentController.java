@@ -94,6 +94,15 @@ public class StudentController {
 		throw new StudentNullPointerException("Getting student as null value");
 	}
 	
+	@PostMapping("/saveMulitpleStudent")
+	public ResponseEntity<String> saveMultipleStudent(@RequestBody List<Student> student)throws StudentNullPointerException {
+		if(student!=null) {
+			return new ResponseEntity<String>(studentService.saveStudents(student),HttpStatus.ACCEPTED);
+		}
+		logger.error("Getting student as null value");
+		throw new StudentNullPointerException("Getting student as null value");
+	}
+	
 	//@PreAuthorize("hasRole('TEACHER')")
 	@PostMapping("/update")
 	public ResponseEntity<String> updateStudent(@RequestBody Student student)throws StudentNullPointerException {
