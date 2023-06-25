@@ -111,7 +111,6 @@ public class AdminServiceImpl implements AdminService {
 		throw new AdminDoesNotExistException("No Admin Record found for the Admin Id: "+admin.getId());
 	}
 
-
 	@Override
 	public LoginUser fetchCredentialByEmailId(String email) {
 		Optional<Admin> admin =adminRepository.findByEmail(email);

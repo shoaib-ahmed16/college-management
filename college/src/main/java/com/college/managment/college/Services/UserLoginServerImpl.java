@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.college.managment.college.DTO.LoginUser;
@@ -23,7 +24,7 @@ import com.college.managment.college.Repository.AdminRepository;
 import com.college.managment.college.Repository.StudentRepository;
 import com.college.managment.college.Repository.TeacherRepository;
 
-@Service(value = "userLoginService")
+@Service(value = "userService")
 public class UserLoginServerImpl implements UserDetailsService, UserLoginServer {
 
 	private static final Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
@@ -36,7 +37,7 @@ public class UserLoginServerImpl implements UserDetailsService, UserLoginServer 
 
 	@Autowired
 	private TeacherRepository teacherRepo;
-	
+   
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		LoginUser user =null;
