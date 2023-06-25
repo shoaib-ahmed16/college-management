@@ -25,7 +25,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class TokenProvider implements Serializable {
 
     @Value("${jwt.token.validity}")
-    public long TOKEN_VALIDITY;
+    public Long TOKEN_VALIDITY;
 
     @Value("${jwt.signing.key}")
     public String SIGNING_KEY;

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.college.managment.college.Config.TokenProvider;
 import com.college.managment.college.DTO.StudentDTO;
 import com.college.managment.college.Entity.Student;
 import com.college.managment.college.Exceptions.StudentNullPointerException;
@@ -30,11 +32,11 @@ public class StudentController {
 	private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 	
 
-//    @Autowired
-//    private AuthenticationManager authenticationManager;
-//
-//    @Autowired
-//    private TokenProvider jwtTokenUtil;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private TokenProvider jwtTokenUtil;
 	
 	@Autowired
 	private StudentService studentService;

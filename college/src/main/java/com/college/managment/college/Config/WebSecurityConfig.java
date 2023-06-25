@@ -77,6 +77,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public JwtAuthenticationFilter authenticationTokenFilterBean() throws Exception {
+    	System.out.print("Inside line 83: "+AuthenticationManager.class.getName());
         return new JwtAuthenticationFilter();
     }
 
