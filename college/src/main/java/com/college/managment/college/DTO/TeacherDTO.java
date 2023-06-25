@@ -1,6 +1,7 @@
 package com.college.managment.college.DTO;
 
 import java.util.List;
+import java.util.Set;
 
 import com.college.managment.college.Entity.Teacher;
 
@@ -12,7 +13,7 @@ public class TeacherDTO {
 	
 	private String email;
 	
-	private String role;
+	private Set<String> role;
 	
 	private String subject;
 	
@@ -89,13 +90,17 @@ public class TeacherDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-	public String getRole() {
+	
+	public Set<String> getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(Set<String> role) {
 		this.role = role;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getSubject() {

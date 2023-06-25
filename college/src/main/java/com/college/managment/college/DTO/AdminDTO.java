@@ -1,5 +1,7 @@
 package com.college.managment.college.DTO;
 
+import java.util.Set;
+
 import com.college.managment.college.Entity.Admin;
 
 public class AdminDTO {
@@ -14,7 +16,7 @@ public class AdminDTO {
     
     private String spouseOrHusbandName;
 	
-	private String role;
+	private Set<String> role;
 
 	public long getId() {
 		return id;
@@ -55,15 +57,15 @@ public class AdminDTO {
 	public void setSpouseOrHusbandName(String spouseOrHusbandName) {
 		this.spouseOrHusbandName = spouseOrHusbandName;
 	}
-
-	public String getRole() {
+	
+	public Set<String> getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(Set<String> role) {
 		this.role = role;
 	}
-	
+
 	public AdminDTO() {
 		
 	}

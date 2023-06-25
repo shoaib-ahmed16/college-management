@@ -1,6 +1,7 @@
 package com.college.managment.college.DTO;
 
 import java.util.Map;
+import java.util.Set;
 
 import com.college.managment.college.Entity.Student;
 
@@ -12,7 +13,7 @@ public class StudentDTO {
 	
 	private String email;
 	
-	private String role;
+	private Set<String> role;
 	
 	private String batch;
 	
@@ -98,15 +99,15 @@ public class StudentDTO {
 	public void setSubjects(Map<String, String> subjects) {
 		this.subjects = subjects;
 	}
+	
+	public Set<String> getRole() {
+		return role;
+	}
 
-	public void setRole(String role) {
+	public void setRole(Set<String> role) {
 		this.role = role;
 	}
 
-	public String getRole() {
-		return role;
-	}
-	
 	public StudentDTO() {
 		
 	}

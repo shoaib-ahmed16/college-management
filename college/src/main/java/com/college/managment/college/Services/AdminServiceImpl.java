@@ -1,13 +1,17 @@
 package com.college.managment.college.Services;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.college.managment.college.DTO.AdminDTO;
+import com.college.managment.college.DTO.LoginUser;
 import com.college.managment.college.Entity.Admin;
 import com.college.managment.college.Exceptions.AdminDoesNotExistException;
 import com.college.managment.college.Exceptions.AdminUnknownServerError;
@@ -67,7 +71,16 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public String saveAdmin(Admin admin) {
 		try {
-			logger.info("Start saving the Admin details into records");
+			logger.info("Ecoding password using { bcryptEncoder } before saving in records");
+			logger.info("Adding Permitable Role for Admin User:");
+				Set<String> roles =admin.getRole();
+					roles=new HashSet<>();
+					roles.add("ROLE_ADMIN");
+					roles.add("ROLE_TEACHER");
+					roles.add("ROLE_STUDENT");
+				admin.setRole(roles);
+			logger.info("Permitable Role added successfully for Admin.");
+			logger.warn("Start saving the Admin details into records");
 			adminRepository.save(admin);
 			logger.info("Admin details saved Successfully!");
 			return "Admin details save successfully!";
@@ -96,6 +109,16 @@ public class AdminServiceImpl implements AdminService {
 		}
 		logger.error("No Admin Record found for the Admin Id: "+admin.getId());
 		throw new AdminDoesNotExistException("No Admin Record found for the Admin Id: "+admin.getId());
+	}
+
+
+	@Override
+	public LoginUser fetchCredentialByEmailId(String email) {
+		Optional<Admin> admin =adminRepository.findByEmail(email);
+		if(admin.isPresent()) {
+			return new LoginUser(admin.get());
+		}
+		return null;
 	}
 	
 }

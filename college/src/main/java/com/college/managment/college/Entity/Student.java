@@ -1,6 +1,7 @@
 package com.college.managment.college.Entity;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,8 +18,6 @@ public class Student {
 	
 	private String password;
 	
-	private String role ="STUDENT";
-	
 	private String batch;
 	
 	private String department;
@@ -29,6 +28,16 @@ public class Student {
 	
 	private String motherName;
 	
+	private Set<String> role;
+	
+	public Set<String> getRole() {
+		return role;
+	}
+
+	public void setRole(Set<String> role) {
+		this.role = role;
+	}
+
 	private Map<String,String>  subjects;
 
 	public String getName() {
@@ -41,10 +50,6 @@ public class Student {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
 	}
 
 	public void setName(String name) {
@@ -105,10 +110,6 @@ public class Student {
 
 	public void setMotherName(String motherName) {
 		this.motherName = motherName;
-	}
-
-	public String getRole() {
-		return role;
 	}
 
 	public Map<String, String> getSubjects() {

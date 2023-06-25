@@ -1,6 +1,7 @@
 package com.college.managment.college.Entity;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,8 +17,6 @@ public class Teacher {
 	private String email;
 	
 	private String password;
-	
-	private String role ="TEACHER";
 	
 	private String subject;
 	
@@ -38,6 +37,8 @@ public class Teacher {
 	private Boolean workingStatus;
 	
 	private List<String> listBatches;
+	
+	private Set<String> role;
 	
 	public Double getSalary() {
 		return salary;
@@ -135,10 +136,6 @@ public class Teacher {
 		this.department = department;
 	}
 
-	public String getRole() {
-		return role;
-	}
-
 	public String getMarriageStatus() {
 		return marriageStatus;
 	}
@@ -154,6 +151,15 @@ public class Teacher {
 	public void setSpouseOrHusbandName(String spouseOrHusbandName) {
 		this.spouseOrHusbandName = spouseOrHusbandName;
 	}
+
+	public Set<String> getRole() {
+		return role;
+	}
+
+	public void setRole(Set<String> role) {
+		this.role = role;
+	}
+
 	public Teacher() {
 		
 	}

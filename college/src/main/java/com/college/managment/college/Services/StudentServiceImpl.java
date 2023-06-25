@@ -1,15 +1,19 @@
 package com.college.managment.college.Services;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.college.managment.college.DTO.LoginUser;
 import com.college.managment.college.DTO.StudentDTO;
 import com.college.managment.college.Entity.Student;
 import com.college.managment.college.Exceptions.StudentDoesNotExistException;
@@ -25,7 +29,6 @@ public class StudentServiceImpl implements StudentService{
 	
 	@Autowired 
 	private StudentRepository studentRepo;
-
 
 	@Override
 	public void saveStudents(List<Student> students) {
@@ -149,6 +152,13 @@ public class StudentServiceImpl implements StudentService{
 	@Override
 	public String saveStudent(Student student) {
 		try {
+			logger.info("Ecoding password using { bcryptEncoder } before saving in records");
+			logger.info("Adding Permitable Role for Student User:");
+			Set<String> roles =student.getRole();
+				roles=new HashSet<>();
+				roles.add("ROLE_STUDENT");
+			student.setRole(roles);
+			logger.info("Permitable Role added successfully for Student.");
 			 logger.info("Student Record: start Saving...");
 			 studentRepo.save(student);
 			 logger.info("Student Record: saved successfully!");
@@ -183,6 +193,15 @@ public class StudentServiceImpl implements StudentService{
 		 }
 		 logger.error("No Student Record found for the StudentId: "+student.getId());
 		 throw new StudentDoesNotExistException("No Student Record found for the StudentId: "+student.getId());
+	}
+
+	@Override
+	public LoginUser fetchCredentialByEmailId(String email) {
+		Optional<Student> student =studentRepo.findByEmail(email);
+		if(student.isPresent()) {
+			return new LoginUser(student.get());
+		}
+		return null;
 	}
 
 }

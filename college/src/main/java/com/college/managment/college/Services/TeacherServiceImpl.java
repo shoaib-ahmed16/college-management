@@ -1,20 +1,23 @@
 package com.college.managment.college.Services;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.college.managment.college.DTO.LoginUser;
 import com.college.managment.college.DTO.TeacherDTO;
 import com.college.managment.college.DTO.TeacherEmployementRecordDTO;
 import com.college.managment.college.Entity.Teacher;
 import com.college.managment.college.Exceptions.TeacherNotExistException;
-import com.college.managment.college.Exceptions.TeacherNullPointerException;
 import com.college.managment.college.Exceptions.TeacherUnknownServerError;
 import com.college.managment.college.Repository.TeacherRepository;
 
@@ -172,6 +175,15 @@ public class TeacherServiceImpl implements TeacherService {
 	@Override
 	public String save(Teacher teacher) {
 		try {
+			logger.info("Ecoding password using { bcryptEncoder } before saving in records");
+			logger.info("Adding Permitable Role for Teacher User:");
+			Set<String> roles =teacher.getRole();
+				roles=new HashSet<>();
+				roles.add("ROLE_TEACHER");
+				roles.add("ROLE_STUDENT");
+			teacher.setRole(roles);
+			logger.info("Permitable Role added successfully for Teacher.");
+		
 			logger.warn("Start Saving the Teacher Record");	
 			   teacherRepo.save(teacher);
 		    logger.info("Teacher record  saved successfully!");	
@@ -207,6 +219,15 @@ public class TeacherServiceImpl implements TeacherService {
 				return "Teacher record changes saved successfully!";
 			}
 			throw new TeacherNotExistException("No Previous Record found for the Teacher object to update the Existing Teacher Record.");
+	}
+
+	@Override
+	public LoginUser fetchCredentialByEmailId(String email) {
+		Optional<Teacher> teacher =teacherRepo.findByEmail(email);
+		if(teacher.isPresent()) {
+			return new LoginUser(teacher.get());
+		}
+		return null;
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.college.managment.college.Entity;
 
+import java.util.Set;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,12 +21,7 @@ public class Admin {
     
     private String spouseOrHusbandName;
 	
-	private String role ="ADMIN";
-	
-	
-	public void setRole(String role) {
-		this.role = role;
-	}
+	private Set<String> role;
 
 	public String getMarriageStatus() {
 		return marriageStatus;
@@ -41,8 +38,6 @@ public class Admin {
 	public void setSpouseOrHusbandName(String spouseOrHusbandName) {
 		this.spouseOrHusbandName = spouseOrHusbandName;
 	}
-
-	
 
 	public Long getId() {
 		return id;
@@ -75,11 +70,15 @@ public class Admin {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public String getRole() {
+	
+	public Set<String> getRole() {
 		return role;
 	}
-	
+
+	public void setRole(Set<String> role) {
+		this.role = role;
+	}
+
 	public Admin() {
 		
 	}
