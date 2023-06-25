@@ -26,6 +26,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     
     private static final String[] AUTH_WHITELIST = {
+    		"/api/v1/collegeLoginContolCenter/admin", //entry point api
+    		"/api/v1/collegeLoginContolCenter/login", // login point api
             // -- Swagger UI v2
             "/v2/api-docs",
             "/swagger-resources",
@@ -77,7 +79,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public JwtAuthenticationFilter authenticationTokenFilterBean() throws Exception {
-    	System.out.print("Inside line 83: "+AuthenticationManager.class.getName());
         return new JwtAuthenticationFilter();
     }
 

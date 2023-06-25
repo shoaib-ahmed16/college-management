@@ -1,7 +1,9 @@
 package com.college.managment.college.Controller;
 
+import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +23,8 @@ import com.college.managment.college.DTO.AuthToken;
 import com.college.managment.college.DTO.LoginUser;
 import com.college.managment.college.Entity.Admin;
 import com.college.managment.college.Exceptions.AdminNullPointerException;
+import com.college.managment.college.Exceptions.UserAutheticationFailException;
 import com.college.managment.college.Services.AdminService;
-import com.college.managment.college.Services.UserLoginServer;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -38,25 +38,30 @@ public class CollegeLoginSignupController {
 
     @Autowired
     private TokenProvider jwtTokenUtil;
-
-    @Autowired
-    private UserLoginServer userService;
     
     @Autowired
     private AdminService adminService;
     
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> generateToken(@RequestBody LoginUser loginUser, HttpServletRequest req) throws AuthenticationException {
-
-    	final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginUser.getUsername(),
-                        loginUser.getPassword()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        final String token = jwtTokenUtil.generateToken(authentication);
-        return ResponseEntity.ok(new AuthToken(token));
+    	try {
+    		logger.info("Start Autenticating the Login User  Credentials");
+	    	final Authentication authentication = authenticationManager.authenticate(
+	                new UsernamePasswordAuthenticationToken(
+	                        loginUser.getUsername(),
+	                        loginUser.getPassword()
+	                )
+	        );
+	    	logger.info("User Credentials Autentication Successfully");
+	    	logger.info("Start Generating JWT Token...");
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	        final String token = jwtTokenUtil.generateToken(authentication);
+	        logger.info("Returning JWT Token...");
+	        return ResponseEntity.ok(new AuthToken(token));
+    	}catch(Exception exc) {
+    		logger.error("User Autentication Failed!!!");
+    		throw new UserAutheticationFailException("Invalid username or password!");
+    	}
     }
 
     @RequestMapping(value="/admin", method = RequestMethod.POST)

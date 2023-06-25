@@ -1,10 +1,13 @@
 package com.college.managment.college.Services;
 
-import com.college.managment.college.DTO.LoginUser;
 import com.college.managment.college.DTO.AdminDTO;
+import com.college.managment.college.DTO.LoginUser;
+import com.college.managment.college.DTO.UserPasswordUpdateDTO;
 import com.college.managment.college.Entity.Admin;
 
 public interface AdminService {
+	
+	public String passwordUpdate(UserPasswordUpdateDTO passwordUpdate);
 	
 	public AdminDTO fetchByEmailId(String email);
 	
@@ -16,7 +19,6 @@ public interface AdminService {
 	
 	public String updateAdmin(Admin admin);
 	
-	public LoginUser fetchCredentialByEmailId(String email);
 }
 
 

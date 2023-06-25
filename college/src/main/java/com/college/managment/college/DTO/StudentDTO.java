@@ -112,7 +112,7 @@ public class StudentDTO {
 		
 	}
 	public StudentDTO(Student student) {
-//		this.id=student.getId();
+		this.id=student.getId();
 		this.email=student.getEmail();
 		this.dateOfBirth=student.getDateOfBirth();
 		this.department=student.getDepartment();

@@ -61,7 +61,7 @@ public class UserLoginServerImpl implements UserDetailsService, UserLoginServer 
 	private Set<SimpleGrantedAuthority> getAuthority(LoginUser user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
         user.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
         });
         return authorities;
     }

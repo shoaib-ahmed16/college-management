@@ -5,12 +5,15 @@ import java.util.Map;
 
 import com.college.managment.college.DTO.LoginUser;
 import com.college.managment.college.DTO.StudentDTO;
+import com.college.managment.college.DTO.UserPasswordUpdateDTO;
 import com.college.managment.college.Entity.Student;
 
 
 public interface StudentService {
 
-    public void saveStudents(List<Student> students);
+	public String passwordUpdate(UserPasswordUpdateDTO passwordUpdate);
+	
+    public String saveStudents(List<Student> students);
 	
 	public StudentDTO fetchStudentByEmail(String email);
 	
@@ -25,6 +28,4 @@ public interface StudentService {
 	public List<StudentDTO> getAllStudent();
 	
 	public StudentDTO fetchStudentByID(Long id);
-	
-	public LoginUser fetchCredentialByEmailId(String email);
 }

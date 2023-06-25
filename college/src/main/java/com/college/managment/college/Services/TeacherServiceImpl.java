@@ -10,12 +10,14 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.college.managment.college.DTO.LoginUser;
 import com.college.managment.college.DTO.TeacherDTO;
 import com.college.managment.college.DTO.TeacherEmployementRecordDTO;
+import com.college.managment.college.DTO.UserPasswordUpdateDTO;
 import com.college.managment.college.Entity.Teacher;
 import com.college.managment.college.Exceptions.TeacherNotExistException;
 import com.college.managment.college.Exceptions.TeacherUnknownServerError;
@@ -29,6 +31,9 @@ public class TeacherServiceImpl implements TeacherService {
 	
 	@Autowired
 	private TeacherRepository teacherRepo;
+	
+	@Autowired
+	private BCryptPasswordEncoder bcryptEncoder;
 	
 	@Override
 	public TeacherDTO fetchTeacherByEmail(String email) {
@@ -176,11 +181,12 @@ public class TeacherServiceImpl implements TeacherService {
 	public String save(Teacher teacher) {
 		try {
 			logger.info("Ecoding password using { bcryptEncoder } before saving in records");
+			teacher.setPassword(bcryptEncoder.encode(teacher.getPassword()));
 			logger.info("Adding Permitable Role for Teacher User:");
 			Set<String> roles =teacher.getRole();
 				roles=new HashSet<>();
-				roles.add("ROLE_TEACHER");
-				roles.add("ROLE_STUDENT");
+				roles.add("TEACHER");
+				roles.add("STUDENT");
 			teacher.setRole(roles);
 			logger.info("Permitable Role added successfully for Teacher.");
 		
@@ -213,6 +219,7 @@ public class TeacherServiceImpl implements TeacherService {
 					teacherToUpdate.setSpouseOrHusbandName(teacher.getSpouseOrHusbandName());
 					teacherToUpdate.setSubject(teacher.getSubject());;
 					teacherToUpdate.setWorkingStatus(teacher.getWorkingStatus());
+					teacherToUpdate.setRole(teacher.getRole());
 				logger.warn("Start Saving the Teacher recoord with updated Fields values");	
 					teacherRepo.save(teacherToUpdate);
 				logger.info("Teacher record changes saved successfully!");	
@@ -222,12 +229,24 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	public LoginUser fetchCredentialByEmailId(String email) {
-		Optional<Teacher> teacher =teacherRepo.findByEmail(email);
-		if(teacher.isPresent()) {
-			return new LoginUser(teacher.get());
+	public String passwordUpdate(UserPasswordUpdateDTO passwordUpdate) {
+		try {
+			logger.info("Start Fetching the Teacher Detials using Teacher Email Id: "+ passwordUpdate.getEmail() +"for updating password");
+			Optional<Teacher>  teacher =teacherRepo.findByEmail(passwordUpdate.getEmail());
+			if(teacher.isPresent()) {
+				Teacher teach=teacher.get();
+				logger.info("Ecoding password using { bcryptEncoder } before updating to the records");
+				teach.setPassword(bcryptEncoder.encode(passwordUpdate.getNewPassword()));
+				logger.warn("Updating Teacher record with the new password");
+				teacherRepo.save(teach);
+				logger.info("Teacher new password updated successfully!");
+				return "Teacher new password updated successfully!";
+			}
+			throw new TeacherNotExistException("Invalid User Email ID or Wrong Email ID");
+		}catch(Exception exc) {
+			logger.error("Unknown Server error occured while updating the new Password!");
+			throw new TeacherUnknownServerError("Unknown Server error occured while updating the new Password!");
 		}
-		return null;
 	}
 
 }

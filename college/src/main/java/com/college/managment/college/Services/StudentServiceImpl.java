@@ -10,15 +10,20 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.college.managment.college.DTO.LoginUser;
 import com.college.managment.college.DTO.StudentDTO;
+import com.college.managment.college.DTO.UserPasswordUpdateDTO;
 import com.college.managment.college.Entity.Student;
+import com.college.managment.college.Entity.Teacher;
 import com.college.managment.college.Exceptions.StudentDoesNotExistException;
 import com.college.managment.college.Exceptions.StudentNullPointerException;
 import com.college.managment.college.Exceptions.StudentUnknownErrorException;
+import com.college.managment.college.Exceptions.TeacherNotExistException;
+import com.college.managment.college.Exceptions.TeacherUnknownServerError;
 import com.college.managment.college.Repository.StudentRepository;
 
 
@@ -30,14 +35,19 @@ public class StudentServiceImpl implements StudentService{
 	@Autowired 
 	private StudentRepository studentRepo;
 
+	
+	@Autowired
+	private BCryptPasswordEncoder bcryptEncoder;
+	
 	@Override
-	public void saveStudents(List<Student> students) {
+	public String saveStudents(List<Student> students) {
 		try {
 		logger.info("Start Saving list of the Students.");
 			for(Student s:students) {
 				studentRepo.save(s);
 			}
 		logger.info("All Student's records save successfully");
+		return "All Student's records save successfully";
 		}catch(Exception exc) {
 			logger.error("Unknown Server error occur while saving the list of students!");
 			throw new StudentUnknownErrorException("Unknown Server error occur while saving the list of students :"+exc.getMessage());
@@ -153,10 +163,11 @@ public class StudentServiceImpl implements StudentService{
 	public String saveStudent(Student student) {
 		try {
 			logger.info("Ecoding password using { bcryptEncoder } before saving in records");
+			student.setPassword(bcryptEncoder.encode(student.getPassword()));
 			logger.info("Adding Permitable Role for Student User:");
 			Set<String> roles =student.getRole();
 				roles=new HashSet<>();
-				roles.add("ROLE_STUDENT");
+				roles.add("STUDENT");
 			student.setRole(roles);
 			logger.info("Permitable Role added successfully for Student.");
 			 logger.info("Student Record: start Saving...");
@@ -196,12 +207,24 @@ public class StudentServiceImpl implements StudentService{
 	}
 
 	@Override
-	public LoginUser fetchCredentialByEmailId(String email) {
-		Optional<Student> student =studentRepo.findByEmail(email);
-		if(student.isPresent()) {
-			return new LoginUser(student.get());
+	public String passwordUpdate(UserPasswordUpdateDTO passwordUpdate) {
+		try {
+			logger.info("Start Fetching the Teacher Detials using Teacher Email Id: "+ passwordUpdate.getEmail() +"for updating password");
+			Optional<Student>  student =studentRepo.findByEmail(passwordUpdate.getEmail());
+			if(student.isPresent()) {
+				Student stud=student.get();
+				logger.info("Ecoding password using { bcryptEncoder } before updating to the records");
+				stud.setPassword(bcryptEncoder.encode(passwordUpdate.getNewPassword()));
+				logger.warn("Updating Student record with the new password");
+				studentRepo.save(stud);
+				logger.info("Student new password updated successfully!");
+				return "Student new password updated successfully!";
+			}
+			throw new TeacherNotExistException("Invalid User Email ID or Wrong Email ID");
+		}catch(Exception exc) {
+			logger.error("Unknown Server error occured while updating the new Password!");
+			throw new TeacherUnknownServerError("Unknown Server error occured while updating the new Password!");
 		}
-		return null;
 	}
 
 }

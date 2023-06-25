@@ -6,7 +6,9 @@ public class TeacherEmployementRecordDTO {
 
 	private String email;
 	
-    private double salary;
+	private Long id;
+	
+    private Double salary;
 	
 	private String joiningDate;
 	
@@ -23,15 +25,7 @@ public class TeacherEmployementRecordDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-	public double getSalary() {
-		return salary;
-	}
-
-	public void setSalary(double salary) {
-		this.salary = salary;
-	}
-
+	
 	public String getJoiningDate() {
 		return joiningDate;
 	}
@@ -63,10 +57,29 @@ public class TeacherEmployementRecordDTO {
 	public void setReposibility(String reposibility) {
 		this.reposibility = reposibility;
 	}
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setSalary(Double salary) {
+		this.salary = salary;
+	}
+
+	public Double getSalary() {
+		return salary;
+	}
+
 	public TeacherEmployementRecordDTO() {
 		
 	}
+	
 	public TeacherEmployementRecordDTO(Teacher teacher) {
+		this.id=teacher.getId();
 		this.joiningDate=teacher.getJoiningDate();
 		this.lastWorkingDate=teacher.getLastWorkingDate();
 		this.reposibility=teacher.getReposibility();
