@@ -7,13 +7,19 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.college.managment.college.DTO.AdminDTO;
 import com.college.managment.college.DTO.LoginUser;
+import com.college.managment.college.DTO.UserPasswordUpdateDTO;
 import com.college.managment.college.Entity.Admin;
+import com.college.managment.college.Entity.Teacher;
 import com.college.managment.college.Exceptions.AdminDoesNotExistException;
 import com.college.managment.college.Exceptions.AdminUnknownServerError;
+import com.college.managment.college.Exceptions.TeacherNotExistException;
+import com.college.managment.college.Exceptions.TeacherUnknownServerError;
 import com.college.managment.college.Repository.AdminRepository;
 
 @Service
@@ -23,6 +29,9 @@ public class AdminServiceImpl implements AdminService {
 
 	@Autowired
 	private AdminRepository adminRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder bcryptEncoder;
 	
 	@Override
 	public AdminDTO fetchById(Long id) {
@@ -71,12 +80,13 @@ public class AdminServiceImpl implements AdminService {
 	public String saveAdmin(Admin admin) {
 		try {
 			logger.info("Ecoding password using { bcryptEncoder } before saving in records");
+			admin.setPassword(bcryptEncoder.encode(admin.getPassword()));
 			logger.info("Adding Permitable Role for Admin User:");
 				Set<String> roles =admin.getRole();
 					roles=new HashSet<>();
-					roles.add("ROLE_ADMIN");
-					roles.add("ROLE_TEACHER");
-					roles.add("ROLE_STUDENT");
+					roles.add("ADMIN");
+					roles.add("TEACHER");
+					roles.add("STUDENT");
 				admin.setRole(roles);
 			logger.info("Permitable Role added successfully for Admin.");
 			logger.warn("Start saving the Admin details into records");
@@ -110,14 +120,25 @@ public class AdminServiceImpl implements AdminService {
 		throw new AdminDoesNotExistException("No Admin Record found for the Admin Id: "+admin.getId());
 	}
 
-
 	@Override
-	public LoginUser fetchCredentialByEmailId(String email) {
-		Optional<Admin> admin =adminRepository.findByEmail(email);
-		if(admin.isPresent()) {
-			return new LoginUser(admin.get());
+	public String passwordUpdate(UserPasswordUpdateDTO passwordUpdate) {
+		try {
+			logger.info("Start Fetching the Teacher Detials using Teacher Email Id: "+ passwordUpdate.getEmail() +"for updating password");
+			Optional<Admin>  admin =adminRepository.findByEmail(passwordUpdate.getEmail());
+			if(admin.isPresent()) {
+				Admin user=admin.get();
+				logger.info("Ecoding password using { bcryptEncoder } before updating to the records");
+				user.setPassword(bcryptEncoder.encode(passwordUpdate.getNewPassword()));
+				logger.warn("Updating Admin record with the new password");
+				adminRepository.save(user);
+				logger.info("Admin new password updated successfully!");
+				return "Admin new password updated successfully!";
+			}
+			throw new TeacherNotExistException("Invalid User Email ID or Wrong Email ID");
+		}catch(Exception exc) {
+			logger.error("Unknown Server error occured while updating the new Password!");
+			throw new TeacherUnknownServerError("Unknown Server error occured while updating the new Password!");
 		}
-		return null;
 	}
 	
 }

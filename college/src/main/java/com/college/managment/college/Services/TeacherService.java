@@ -6,9 +6,13 @@ import java.util.Map;
 import com.college.managment.college.DTO.LoginUser;
 import com.college.managment.college.DTO.TeacherDTO;
 import com.college.managment.college.DTO.TeacherEmployementRecordDTO;
+import com.college.managment.college.DTO.UserPasswordUpdateDTO;
+import com.college.managment.college.Entity.Student;
 import com.college.managment.college.Entity.Teacher;
 
 public interface TeacherService {
+	
+		public String passwordUpdate(UserPasswordUpdateDTO passwordUpdate);
 		
 		public TeacherDTO fetchTeacherByEmail(String email);
 		
@@ -19,8 +23,6 @@ public interface TeacherService {
 		public TeacherDTO fetchTeacherById(Long teacherId);
 		
 		public String deleteTeacherById(Long id);
-		
-		public LoginUser fetchCredentialByEmailId(String email);
 		
 		public String save(Teacher teacher);
 		
