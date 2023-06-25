@@ -1,6 +1,6 @@
-# college-management
+# College - Management
 
-## this project start with adding the Admin first 
+## This project start with adding the Admin first 
 #### 1. Add Admin
 #### 2. Login using admin username (Email) and password.
 #### 3. Admin can do all operation related to teacher student and Admin itself.
