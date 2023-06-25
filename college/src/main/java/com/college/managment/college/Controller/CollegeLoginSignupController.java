@@ -3,7 +3,6 @@ package com.college.managment.college.Controller;
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.college.managment.college.Config.TokenProvider;
 import com.college.managment.college.DTO.AuthToken;
 import com.college.managment.college.DTO.LoginUser;
@@ -46,6 +45,7 @@ public class CollegeLoginSignupController {
     public ResponseEntity<?> generateToken(@RequestBody LoginUser loginUser, HttpServletRequest req) throws AuthenticationException {
     	try {
     		logger.info("Start Autenticating the Login User  Credentials");
+    	
 	    	final Authentication authentication = authenticationManager.authenticate(
 	                new UsernamePasswordAuthenticationToken(
 	                        loginUser.getUsername(),
